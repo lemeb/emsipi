@@ -1,6 +1,15 @@
 *.DS_Store
 scratch
 .env
+.ruff_cache/
+
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.*
+**/.terraform.lock.hcl
+
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
