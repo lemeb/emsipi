@@ -32,12 +32,12 @@ jobs:
                 # Parse something like '>=3.9' to get '3.9'
                 min_version = requires_python.replace('>=', '').replace('>', '').strip()
 
-                all_versions = ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+                all_versions = ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13']
                 try:
                     start_idx = all_versions.index(min_version)
                     matrix = all_versions[start_idx:]
                 except ValueError:
-                    matrix = ['3.10', '3.11', '3.12', '3.13', '3.14']  # fallback
+                    matrix = ['3.10', '3.11', '3.12', '3.13']  # fallback
 
                 print(f'python-versions={json.dumps(matrix)}')
                 " >> $GITHUB_OUTPUT
