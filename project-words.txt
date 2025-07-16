@@ -1,0 +1,11 @@
+venv
+pyproject
+basedpyright
+pytest
+pyright
+mkdocs
+mkdocstrings
+mypy
+docstrings
+Mebazaa
+emsipi

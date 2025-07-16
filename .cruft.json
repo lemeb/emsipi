@@ -1,0 +1,23 @@
+{
+  "template": "https://github.com/lemeb/python-library-cookiecutter",
+  "commit": "54a13d8fe041a4ed00b863e1fbb96f0b6ee26114",
+  "checkout": null,
+  "context": {
+    "cookiecutter": {
+      "project_name": "emsipi",
+      "project_slug": "emsipi",
+      "project_short_description": "A simple MCP server that can seamlessly run on the cloud.",
+      "version": "0.1",
+      "python_min_version": "3.12",
+      "full_name": "Leopold Mebazaa",
+      "github_username": "lemeb",
+      "email": "lemeb@users.noreply.github.com",
+      "project_license": "MIT License",
+      "includes_playwright": "no",
+      "__gh_slug": "lemeb/emsipi",
+      "_template": "https://github.com/lemeb/python-library-cookiecutter",
+      "_commit": "54a13d8fe041a4ed00b863e1fbb96f0b6ee26114"
+    }
+  },
+  "directory": null
+}

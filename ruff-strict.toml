@@ -1,0 +1,6 @@
+###### RULES IN PREVIEW ######
+# When these rules go out of preview, we will need to potentially
+# move to line-level ignore directives.
+[tool.ruff.lint.extend-per-file-ignores]
+# No need to put copyright mentions in the tests files
+"tests/**/*.py" = ["CPY001"]

@@ -1,0 +1,109 @@
+name: CI
+
+
+# Run on pushes to the main branch and on pull requests
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  generate-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+        python-versions: ${{ steps.set-matrix.outputs.python-versions }}
+    steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-python@v4
+          with:
+            python-version: '3.11'
+        - name: Generate Python version matrix
+          id: set-matrix
+          run: |
+                python -c "
+                import tomllib
+                import json
+
+                with open('pyproject.toml', 'rb') as f:
+                    data = tomllib.load(f)
+
+                requires_python = data['project']['requires-python']
+                # Parse something like '>=3.9' to get '3.9'
+                min_version = requires_python.replace('>=', '').replace('>', '').strip()
+
+                all_versions = ['3.8', '3.9', '3.10', '3.11', '3.12', '3.13', '3.14']
+                try:
+                    start_idx = all_versions.index(min_version)
+                    matrix = all_versions[start_idx:]
+                except ValueError:
+                    matrix = ['3.10', '3.11', '3.12', '3.13', '3.14']  # fallback
+
+                print(f'python-versions={json.dumps(matrix)}')
+                " >> $GITHUB_OUTPUT
+
+  lint-and-check:
+    needs: [generate-matrix]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ fromJson(needs.generate-matrix.outputs.python-versions)[0] }}
+
+      - name: Install all dependencies
+        run: make install-all
+
+      - name: Run code quality checks
+        run: make check
+
+      - name: Run markdown and spell checks
+        run: make md-check spell-check
+
+  test:
+    needs: [lint-and-check, generate-matrix]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ${{ fromJson(needs.generate-matrix.outputs.python-versions) }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache uv dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.python-version }}-
+
+      - name: Install all dependencies
+        run: make install-all
+
+      - name: Run tests with coverage
+        # Create a .env file if your tests require it
+        # echo ${{ secrets.DOTENV_FILE }} >> .env
+        run: make test-all
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.python-version }}
+          path: htmlcov/

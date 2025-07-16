@@ -1,0 +1,17 @@
+{
+    "config": {
+      // Necessary to avoid errors for admonitions
+      "code-block-style": false,
+      "reference-links-images": false,
+      // We allow to put <br> for things like footnotes where Mkdocs
+      // require only one line
+      "MD033": {
+        "allowed_elements": [
+          "br"
+        ]
+      },
+      "MD050": {
+        "style": "asterisk"
+      }
+    }
+  }

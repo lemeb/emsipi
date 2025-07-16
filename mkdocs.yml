@@ -1,0 +1,74 @@
+site_name: emsipi
+site_url: "https://github.com/lemeb/emsipi"
+strict: true
+
+theme:
+  name: material
+  font:
+    text: Funnel Sans
+    code: Geist Mono
+  palette:
+    scheme: slate
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - content.code.annotate
+
+repo_name: lemeb/emsipi
+repo_url: "https://github.com/lemeb/emsipi"
+edit_uri: edit/main/docs/
+
+# https://www.mkdocs.org/user-guide/configuration/#validation
+validation:
+  omitted_files: warn
+  absolute_links: warn
+  unrecognized_links: warn
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - mdx_truly_sane_lists:
+      nested_indent: 2
+      truly_sane: true
+  - footnotes
+  - toc:
+      permalink: true
+
+
+plugins:
+- mkdocstrings:
+    handlers:
+      python:
+        paths: [.]
+        options:
+          inherited_members: true
+          group_by_category: true
+          members_order: source
+          separate_signature: true
+          filters: ["!^_(?!defer_build_mode)"]
+          docstring_options:
+            ignore_init_summary: true
+          merge_init_into_class: true
+          show_signature_annotations: true
+          show_root_heading: true
+          show_root_full_path: true
+          show_root_members_full_path: false
+          signature_crossrefs: true
+          show_symbol_type_heading: true
+          show_symbol_type_toc: true
+        inventories:
+          - https://docs.python.org/3/objects.inv
+
+nav:
+- Get Started: index.md
+- API:
+  - API Reference: api/main.md

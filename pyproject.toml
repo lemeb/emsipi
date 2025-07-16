@@ -1,0 +1,126 @@
+#:schema https://json.schemastore.org/pyproject.json
+[build-system]
+# Note: the pin in the original template might evolve over time and
+# is subject to change.
+requires = ["uv_build>=0.7.21,<0.8.0"]
+build-backend = "uv_build"
+
+[project]
+requires-python = ">= 3.12"
+name = "emsipi"
+version = "0.1"
+description = "A simple MCP server that can seamlessly run on the cloud."
+license = { text = "MIT License" }
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Typing :: Typed","License :: OSI Approved :: MIT License",
+]
+authors = [
+    { name = "Leopold Mebazaa", email = "lemeb@users.noreply.github.com" }
+]
+dependencies = [
+  # Add your dependencies here
+]
+[dependency-groups]
+dev = [
+  "python-dotenv",
+  # testing
+  "coverage",
+  "pytest",
+  # linting
+  "mypy",
+  "basedpyright",
+  "ruff",
+  # documentation
+  "mkdocs",
+  "mkdocs-material",
+  "mkdocstrings[python]",
+  "mdx-truly-sane-lists",
+  # for vscode
+  "ipykernel",
+  # CI/CD
+  "pre-commit",
+]
+
+
+[project.urls]
+"Homepage" = "https://github.com/lemeb/emsipi"
+"Bug Tracker" = "https://github.com/lemeb/emsipi/issues"
+
+[tool.uv.build-backend]
+module-root = "src"
+
+
+[tool.ruff]
+line-length = 80
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  # Irrelevant rules
+  "PD", # We don't need to worry about pandas
+  # Conflicting rules identified by Ruff
+  # https://docs.astral.sh/ruff/formatter/#format-suppression
+  "COM812",
+  "ISC001",
+  # We prefer docstrings that are not in the first line
+  "D212",
+  # and we want docstrings right under the class definition
+  "D203",
+  # We allow for f-strings in logger, because doing it otherwise
+  # would be way too verbose
+  "G004",
+  # We allow the use of TODOs (under some formats)
+  "FIX002",
+]
+
+# For manual overrides
+[tool.ruff.lint.per-file-ignores]
+# We don't want to check our docstrings in test
+# We also don't want asserts to be an issue
+# Also, it's fine to call private members in testing
+'tests/*' = ['D', 'S101', 'SLF001']
+# In general, scratch code can be laxer, including with docstrings, types
+# print statements, and commented-out code
+'scratch/*' = ['T201', 'D100', 'D101', 'D102', "ERA001"]
+
+[tool.ruff.lint.pydocstyle]
+# I personally prefer numpy, but as of May 2024, Ruff
+# only supports google in their pydocstyle configuration
+convention = "google"
+
+[tool.mypy]
+files = "."
+
+# Use strict defaults
+strict = true
+warn_unreachable = true
+warn_no_return = true
+
+# Useful for removing warnings from third-party libraries
+# # datasets doesn't have type hints and is not maintained
+# [[tool.mypy.overrides]]
+# module = "datasets.*"
+# ignore_missing_imports = true
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+# This setting ("all") is only available with
+# basedpyright; otherwise, choose strict
+typeCheckingMode = "all"
+
+[tool.coverage.run]
+# Measurement of contexts
+dynamic_context = "test_function"
+
+[tool.coverage.report]
+exclude_also = [
+  "pragma: no cover",
+  "@overload",
+  "if .*TYPE_CHECKING",
+  "if typing.TYPE_CHECKING",
+  "if __name__ == .__main__.",
+]
