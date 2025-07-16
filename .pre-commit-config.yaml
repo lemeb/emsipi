@@ -7,8 +7,12 @@ repos:
         # https://github.com/squidfunk/mkdocs-material/discussions/7297
         args: [--unsafe]
     -   id: end-of-file-fixer
+        # Exclude Keynote files
+        exclude: ".*\\.key$"
     -   id: trailing-whitespace
         exclude: ^tests/fixtures
+        # Exclude Keynote files
+        exclude: ".*\\.key$"
 -   repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.12.3
     hooks:
