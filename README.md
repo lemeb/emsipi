@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD033 MD041 -->
 <div align="center">
-    <img alt="Emsipi logo" src="logo.png">
+    <img alt="Emsipi logo" src="logo.png" height="140">
     <h1 align="center">emsipi</h1>
 </div>
 
