@@ -5,11 +5,16 @@ import logging
 import os
 
 from fastmcp import FastMCP
+from starlette.middleware import Middleware as StarletteMiddleware
+
+from emsipi.middlewares import ASGIMiddleware, SimpleLoggingMiddleware
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(format="[%(levelname)s]: %(message)s", level=logging.INFO)
 
+
 mcp = FastMCP("MCP Server on Cloud Run")  # type: ignore[var-annotated] # pyright: ignore[reportUnknownVariableType]
+mcp.add_middleware(SimpleLoggingMiddleware())
 
 
 @mcp.tool()
@@ -48,5 +53,9 @@ if __name__ == "__main__":
     logger.info(f"🚀 MCP server started on port {port}")
     # Could also use 'sse' transport, host="0.0.0.0" required for Cloud Run.
     asyncio.run(
-        mcp.run_http_async(port=port, host="0.0.0.0"),  # noqa: S104
+        mcp.run_http_async(
+            port=port,
+            host="0.0.0.0",  # noqa: S104
+            middleware=[StarletteMiddleware(ASGIMiddleware)],
+        ),
     )
