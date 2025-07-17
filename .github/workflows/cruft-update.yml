@@ -13,7 +13,21 @@ jobs:
       fail-fast: true
       matrix:
         include:
-          - add-paths: .
+          # NOTE: By default, this workflow will ignore GitHub Actions
+          # workflow files. This is because you will most likely run
+          # this workflow with the default GITHUB_TOKEN, which does
+          # not have permissions to push anything that would edit a
+          # workflow.
+          # This means that any changes to GH workflows in the template
+          # repository WILL be silently ignored; any upstream change
+          # you might want to make will have to be done manually.
+          # If you want workflow files to be updated automatically, you
+          # will need to specify a personal access token (PAT) in the
+          # secrets of this repository. You can find reference code that
+          # alludes to this possibility later in the file.
+          - add-paths: |
+              .
+              !.github/workflows/     # Delete this line if you use a PAT
             body: Use this to merge the changes to this repository.
             branch: cruft/update
             commit-message: "chore: accept new Cruft update"
@@ -61,6 +75,14 @@ jobs:
         if: steps.check.outputs.has_changes == '1'
         uses: peter-evans/create-pull-request@v4
         with:
+          # NOTE: As indicated above, the default GITHUB_TOKEN will not
+          # have permissions to modify workflow files. If you want to have
+          # such modifications being done anyway, generate a GitHub
+          # Personal Access Token with permissons to edit workflows,
+          # define it as a secret in your repository, and use it in the
+          # line below.
+          # More info can be found here:
+          # https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens
           token: ${{ secrets.GITHUB_TOKEN }}
           add-paths: ${{ matrix.add-paths }}
           commit-message: ${{ matrix.commit-message }}

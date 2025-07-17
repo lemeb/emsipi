@@ -1,4 +1,4 @@
-# Contributing
+# Developer Guide for emsipi
 
 ## ✨ Getting started
 
@@ -125,3 +125,18 @@ type-checkers before committing.
 
 The configuration is in the `.pre-commit-config.yaml` file. Note that we use
 `pyright` and not `basedpyright`.
+
+### GitHub Actions workflows
+
+There are two Github Actions workflows:
+
+- `ci.yml`: Runs the tests, linters, and type-checkers on every push and pull
+  request.
+- `cruft-update.yml`: Runs the `cruft update` command every day.
+
+> [!CAUTION]
+> The `cruft-update.yml` workflow, by default, does NOT update the GitHub
+> workflows files. They are skipped, silently. If you want to update them,
+> you will need to use a Personal Access Token in the configuration of the
+> workflow. See the [`cruft-update.yml`](.github/workflows/cruft-update.yml)
+> file for more details.
