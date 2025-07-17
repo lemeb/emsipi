@@ -15,7 +15,7 @@
 
 ```bash
 make install              # Installs the dependencies for the project
-source .venv/bin/activate # Activate the virtual environment
+source .venv/bin/activate # Activates the virtual environment
 ```
 
 ### Documentation
