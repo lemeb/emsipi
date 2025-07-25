@@ -9,6 +9,16 @@ scratch
 *.tfstate.*
 **/.terraform.lock.hcl
 
+# CDKTF
+cdktf.out/
+**/cdktf.out/
+**/.gen
+
+# Emsipi
+**/emsipi.private.yaml
+
+# Tests
+tests/tmp
 
 
 # Byte-compiled / optimized / DLL files
