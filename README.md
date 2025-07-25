@@ -26,6 +26,5 @@ make doc-serve            # Serves the documentation locally for preview
 
 ## Development
 
-If you're a developer, you should read the [DEVELOP.md](DEVELOP.md)
-file. It includes information on how to use this repository and how to
-contribute to it.
+If you're a developer, you should read the [DEVELOP.md](DEVELOP.md) file. It
+includes information on how to use this repository and how to contribute to it.
