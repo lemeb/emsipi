@@ -41,6 +41,9 @@ PYTEST_EXCLUDE_PATTERNS := ""
 # (e.g. "\#.venv" "\#scratch" "\#runs")
 MDLINT_EXCLUDE_PATTERNS := "\#.venv" "\#scratch"
 
+# Checkable files
+CHECKABLE_FILES := "src/$(SLUG)/ $(shell find tests/ -name '*.py' -not -path 'tests/tmp/*' -not -path 'tests/fixtures/*') docs/"
+
 # Default target
 .DEFAULT_GOAL := help
 .PHONY: help
@@ -118,13 +121,13 @@ clean: ## Remove generated files
 
 .PHONY: ruff-check ruff-format mypy-check check
 ruff-check: ## Run ruff checks
-	@$(UV) run ruff check .
+	@$(UV) run ruff check $(CHECKABLE_FILES)
 
 ruff-format: ## Run ruff formatter
-	@$(UV) run ruff format .
+	@$(UV) run ruff format $(CHECKABLE_FILES)
 
 mypy-check: ## Run mypy checks
-	@$(UV) run mypy --check-untyped-defs --strict src/$(SLUG) tests/ --ignore-missing-imports
+	@$(UV) run mypy --check-untyped-defs --strict $(CHECKABLE_FILES) --ignore-missing-imports
 
 check: ruff-check ruff-format mypy-check ## Run basic code quality checks in parallel
 
@@ -145,7 +148,7 @@ check-strict-file-prep: ## Prepare config for strict file check
 	@cat ruff-strict.toml >> scratch/pyproject.toml
 
 check-strict-file-ruff: check-strict-file-prep ## Run ruff on single file
-	$(UV) run ruff check --preview $(FILE) --config scratch/pyproject.toml
+	@$(UV) run ruff check --preview $(FILE) --config scratch/pyproject.toml
 
 check-strict-file-pyright: check-strict-file-prep ## Run pyright on single file
 	@$(UV) tool run basedpyright $(FILE)
@@ -158,9 +161,8 @@ check-strict-file: check-strict-file-prep ## Run strict checks on a single file 
 	@rm scratch/pyproject.toml
 
 check-strict-all: ## Run strict checks on all files
-	$(eval FILE := "src/$(SLUG)/ tests/ docs/")
-	@$(MAKE) check-strict-file-prep FILE=$(FILE)
-	@$(MAKE) -j3 -k check-strict-file-ruff FILE=$(FILE) check-strict-file-mypy check-strict-file-pyright FILE=$(FILE)
+	@$(MAKE) check-strict-file-prep FILE=$(CHECKABLE_FILES)
+	@$(MAKE) -j3 -k check-strict-file-ruff FILE=$(CHECKABLE_FILES) check-strict-file-mypy check-strict-file-pyright FILE=$(CHECKABLE_FILES)
 	@rm scratch/pyproject.toml
 
 ###############################################################################
@@ -180,6 +182,7 @@ test-verbose: ## Run verbose tests
 
 test-all: check-dotenv ## Run all tests with coverage
 	@$(UV) run --all-groups coverage run -m pytest --log-cli-level=2
+	@$(UV) run --all-groups coverage combine
 	@$(UV) run --all-groups coverage html --show-contexts
 
 test-all-versions: check-venv ## Run tests with coverage for all supported Python versions
