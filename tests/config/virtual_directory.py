@@ -278,7 +278,7 @@ class VirtualDirectoryManager:
         )
         for cfg in (public_cfg, private_cfg):
             if cfg is not None:
-                for key, value in cfg.items():
+                for key, value in cfg.items():  # pyright: ignore[reportAny]
                     if isinstance(value, str) and "{virtual_dir}" in value:
                         cfg[key] = value.replace(
                             "{virtual_dir}", str(virtual_dir.get_path())
