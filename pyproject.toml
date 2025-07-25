@@ -70,7 +70,7 @@ emsipi = "emsipi.main:main"
 module-root = "src"
 
 [tool.uv.workspace]
-members = ["examples/simple-server", "examples/server-with-middleware"]
+members = []
 
 
 [tool.ruff]
