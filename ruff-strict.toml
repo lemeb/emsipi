@@ -4,3 +4,22 @@
 [tool.ruff.lint.extend-per-file-ignores]
 # No need to put copyright mentions in the files
 "**/*.py" = ["CPY001"]
+# subprocess is needed for core functionality in emsipi.py
+# Fine to have a big boolean block in emsipi.py
+# Fine also not to have 'Args', 'Returns', 'Raises' in docstrings
+# (because they are parsed by typer and that would pollute the help text)
+"src/emsipi/main.py" = ["S404", "PLR0916", "DOC501"]
+# GCP deployment stack needs many positional arguments for constructor
+"src/emsipi/deployment/gcp.py" = ["PLR0917", "S404"]
+# GCP provider needs to handle DOC502 for methods without raising TypeError
+"src/emsipi/deployment/gcp_provider.py" = ["DOC502", "DOC501"]
+# Base deployment provider uses Any for flexibility - needed for abstract interface
+"src/emsipi/deployment/base.py" = []
+# and fine to have a lot of local variables in Pydantic validators
+# Complex validators need many branches for rich prompts
+# Some prompts require slightly longer lines for clarity
+"src/emsipi/config/config.py" = ["PLR0914"]
+# Fine to have a long `create_file_test` function
+"tests/config/config_tests_scaffolding.py" = ["PLR0917"]
+# Fine to use subprocess in cli_executor.py
+"tests/config/cli_executor.py" = ["S404"]
