@@ -1,0 +1,51 @@
+# NOTE: Copy this file to emsipi.private.yaml
+
+# -----------------------------------------------------------------------------
+# EMSIPI CONFIGURATION FILE -- READ THIS FIRST
+# -----------------------------------------------------------------------------
+#
+# This is the specification of the configuration file for emsipi:
+#
+# 1. You can have a private configuration file called `emsipi.private.yaml`,
+#    which should not be tracked by git, and whose values will override the
+#    values in `emsipi.yaml`.
+# 2. Any value beginning with `<` is a placeholder, and will be ignored by
+#    emsipi. If you have to pass a value that contains `<`, you can escape it
+#    by using `\<`.
+
+# The name of the MCP server.
+# Mandatory.
+server-name: emsipi-simple-server
+
+# Configuration for the cloud provider (or providers) you want to use. Put each
+# configuration in a separate block. For now, only 'google' (GCP) is supported.
+providers:
+  google:
+    # Google Cloud Platform (GCP) project ID.
+    # Mandatory.
+    project:
+
+    # Artifact Registry repository ID.
+    # Optional. If not provided, we will create a repository called
+    # `<server-name>-repo` in the Artifact Registry.
+    artifact-registry:
+
+    # GCP region.
+    # Where the resources will be created.
+    # Optional. Defaults to `us-central1`.
+    region:
+
+    # Cloud Run service name.
+    # Optional. Defaults to `<server-name>`.
+    service-name:
+
+# Environment variables that will be available to the MCP server, regardless of
+# the session. They will be passed as environment variables to the MCP server.
+# For now, only "flat" environment variables are supported (e.g. no nested
+# dictionaries).
+#
+# Example:
+# environment-variables:
+#   MY_VARIABLE: "my-value"
+#   ANOTHER_VARIABLE: "another-value"
+environment-variables:
