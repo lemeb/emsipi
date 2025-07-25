@@ -2,4 +2,4 @@
 
 This is an example of API documentation:
 
-::: emsipi.emsipi.main
+::: emsipi.main.main
