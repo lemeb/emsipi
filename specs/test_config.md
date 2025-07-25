@@ -32,7 +32,7 @@ Each test should have the following parameters:
 3. **CLI arguments**: This should define was is passed to the CLI. It should
    be the raw text passed to the command line (e.g.
    `emsipi internal-config google --arg val`). If some operations should be performed
-   before (e.g. `cd`), they should be mentionned in this command.
+   before (e.g. `cd`), they should be mentioned in this command.
 
 4. **Environment variables**: This should be the environment variables passed
    to the CLI.

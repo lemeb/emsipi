@@ -1,12 +1,12 @@
 # `tests/config`
-
+<!-- markdownlint-disable MD013 -->
 In this directory, you can find various tests for configuring `emsipi`.
 
 ## `test_example_cases.py`
 
 | Test name | Scenario | Expected output |
 | ------------- | -------------- | -------------- |
-| `simple_existing_config` | A minimal project, with a working `server.py`, an existing `emsipi.yaml`, and a clear Python dependency file with `pyproject_basic.toml` | Does not ask for any information in the wizard; properly infers python version, runtime, name and depedency file |
+| `simple_existing_config` | A minimal project, with a working `server.py`, an existing `emsipi.yaml`, and a clear Python dependency file with `pyproject_basic.toml` | Does not ask for any information in the wizard; properly infers python version, runtime, name and dependency file |
 | `templated_config_test` | A minimal project similar to `simple_existing_config`, but using `emsipi_template.yaml` and `pyproject_template.toml`, along with various variables | Does not ask for any information in the wizard; properly infers python version, runtime, name and dependency file, and uses the template variables; the generated `pyproject.toml` and `emsipi.yaml` are correct given the variables |
 | `python_server_with_deps` | Python server configuration with dependency management | Properly configures Python runtime with dependency detection |
 | `test_manual_config_case` | Manual configuration test case | Tests manual configuration setup process |
@@ -24,7 +24,7 @@ In this directory, you can find various tests for configuring `emsipi`.
 | `complex_template_test` | Complex template test with multiple variable substitutions | Uses template variables to generate correct emsipi.yaml and pyproject.toml files |
 | `private_config_override` | Project with both public and private configuration files | Private config values properly override public config values |
 | `pydantic_validation_empty_server_name` | Configuration with empty server name | Validation fails with appropriate error message about empty server name |
-| `test_dockerfile_detection_logic` | Tests Dockerfile detection and generation logic | Properly detects existing Dockerfiles and determines whether to generate new ones |
+| `test_dockerfile_detection_logic` | Tests Dockerfile detection and generation logic | Properly detects existing Dockerfile(s) and determines whether to generate new ones |
 | `both_server_file_and_command` | Configuration with both server_file and server_command set | Validation fails with mutually exclusive error |
 | `neither_server_file_nor_command` | Configuration without server_file or server_command | Validation fails with missing server target error |
 

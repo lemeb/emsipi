@@ -1,3 +1,5 @@
+# Specification for the `emsipi` configuration
+
 > [!WARNING]
 > This spec is a little out of date, and should be updated to reflect the
 > actual state of the codebase.
@@ -60,7 +62,7 @@ If such argument is not present, the current working directory becomes the
 script's working directory, which will be present in our configuration under
 the `working_directory` attribute.
 
-### Detection of `empsipi` configuration files
+### Detection of `emsipi` configuration files
 
 The script should be looking for either configuration file in the
 `working_directory`. If no file is found, then `do_generate_config_files`
@@ -138,14 +140,14 @@ path to a Dockerfile. The default value of `dockerfile` is `./Dockerfile`.
 We obey the following conditions:
 
 1. If the file at `dockerfile` doesn't exist, we set `do_generate_dockerfile` to
-  `True.`
+`True.`
 2. If the file at `dockerfile` exists, we look at its first line:
-  1. If it contains `# OVERWRITE: OK`, it means it was automatically generated
-    and can be overwritten. In this case, `do_generate_dockerfile` is set
-    to `True`.
-  2. If it does not, we consider that the `Dockerfile` is meant to be used as is,
-    and we will not touch it. `do_generate_dockerfile` is set to `False`.
-    **Skip to Step XXXXXX.**
+    1. If it contains `# OVERWRITE: OK`, it means it was automatically generated
+       and can be overwritten. In this case, `do_generate_dockerfile` is set
+       to `True`.
+    2. If it does not, we consider that the `Dockerfile` is meant to be used as is,
+       and we will not touch it. `do_generate_dockerfile` is set to `False`.
+       **Skip to Step XXXXXX.**
 
 > [!TIP]
 > **What if I want to keep my `Dockerfile`, but want `emsipi` to generate
@@ -178,21 +180,21 @@ We use simply by detecting the server file extension:
 
 1. If `is_server_file` is `False` (meaning that the server file is a
    command):
-  1. we set `command_type` to `shell`.
-  2. We set `raw_runtime` to `auto`.
-  3. **Skip to Step 5A** to set `runtime`.
+    1. we set `command_type` to `shell`.
+    2. We set `raw_runtime` to `auto`.
+    3. **Skip to Step 5A** to set `runtime`.
 2. If `is_server_file` is `True` (meaning that the server file is a
    file path):
-  1. If the server file extension is `.py`:
-     1. we set `command_type` to `python`;
-     2. we set `raw_runtime` to `python`;
-     3. we skip to step 5A, which will set `runtime` to `python`;
-     4. **we skip to step 5B**.
-  2. If the server file extension is `.js`:
-     1. we set `command_type` to `node`;
-     2. we set `raw_runtime` to `node`;
-     3. we skip to step 5A, which will set `runtime` to `node`;
-     4. **we skip to step 5C**.
+    1. If the server file extension is `.py`:
+        1. we set `command_type` to `python`;
+        2. we set `raw_runtime` to `python`;
+        3. we skip to step 5A, which will set `runtime` to `python`;
+        4. **we skip to step 5B**.
+    2. If the server file extension is `.js`:
+        1. we set `command_type` to `node`;
+        2. we set `raw_runtime` to `node`;
+        3. we skip to step 5A, which will set `runtime` to `node`;
+        4. **we skip to step 5C**.
 
 ### (Step 5) Runtime options
 
@@ -243,22 +245,22 @@ we set `runtime` to the value of `raw_runtime`. If it is set to
 not set, we will set it to `"auto"`.
 
 1. If `any_python_config_file_present` is `True`:
-  1. If `package_json_present` is `True`, we raise a validation error with
-      a message asking the user to define the `runtime` attribute to either
-      `python` or `node`. If the configuration wizard is active, though (e.g.
-      `do_generate_config_files` is `True`), we will ask the user to define
-      the `runtime` attribute.
-  2. If `package_json_present` is `False`, we set `runtime` to `python`. We
-     **skip to Step 5B**.
+    1. If `package_json_present` is `True`, we raise a validation error with
+        a message asking the user to define the `runtime` attribute to either
+        `python` or `node`. If the configuration wizard is active, though (e.g.
+        `do_generate_config_files` is `True`), we will ask the user to define
+        the `runtime` attribute.
+    2. If `package_json_present` is `False`, we set `runtime` to `python`. We
+      **skip to Step 5B**.
 2. If `any_python_config_file_present` is `False`:
-  1. If `package_json_present` is `True`, we set `runtime` to `node`. We
-     **skip to Step 5C**.
-  2. If `package_json_present` is `False`, we raise a validation error
-     with a message telling the user that `emsipi` does not know how to run
-     the server. We remind users that the working directory is `cwd` by
-     default, that `emsipi` is meant to be run in the directory at the root of
-     the project, and that they can use the `--directory` argument to change
-     the working directory.
+    1. If `package_json_present` is `True`, we set `runtime` to `node`. We
+      **skip to Step 5C**.
+    2. If `package_json_present` is `False`, we raise a validation error
+      with a message telling the user that `emsipi` does not know how to run
+      the server. We remind users that the working directory is `cwd` by
+      default, that `emsipi` is meant to be run in the directory at the root of
+      the project, and that they can use the `--directory` argument to change
+      the working directory.
 
 In the configuration wizard, we will ask the user to define the `runtime`
 attribute, but we can use the inferred value to set the default value.
@@ -280,17 +282,17 @@ We run the following logic if `raw_python_dependencies_file` is
 `auto`:
 
 1. If `uv_lock_present` is `True`:
-  1. If `requirements_txt_present` is `False`, we set
-      `python_dependencies_file` to `uv.lock`.
-  2. If `requirements_txt_present` is `True`, we raise a warning that
-      `uv.lock` will be used, but that `requirements.txt` will not be used.
-      We set `python_dependencies_file` to `uv.lock`.
+    1. If `requirements_txt_present` is `False`, we set
+        `python_dependencies_file` to `uv.lock`.
+    2. If `requirements_txt_present` is `True`, we raise a warning that
+        `uv.lock` will be used, but that `requirements.txt` will not be used.
+        We set `python_dependencies_file` to `uv.lock`.
 2. Else if `requirements_txt_present` is `True`:
-  1. If `deps_in_pyproject` is `True`, we raise a warning that
-      `requirements.txt` will be used, but that `pyproject.toml` will not be
-      used. We set `python_dependencies_file` to `requirements.txt`.
-  2. If `deps_in_pyproject` is `False`, we set `python_dependencies_file` to
-  `requirements.txt`.
+    1. If `deps_in_pyproject` is `True`, we raise a warning that
+        `requirements.txt` will be used, but that `pyproject.toml` will not be
+        used. We set `python_dependencies_file` to `requirements.txt`.
+    2. If `deps_in_pyproject` is `False`, we set `python_dependencies_file` to
+      `requirements.txt`.
 3. Else if `deps_in_pyproject` is `True`, we set `python_dependencies_file` to
   `pyproject.toml`.
 4. If `any_python_config_file_present` is `False`, we raise a validation error that
@@ -349,6 +351,3 @@ not `node`, a validation error is raised as well.
 In the configuration wizard, we will ask the user to define the `node_version`
 attribute, but we can use the inferred value to set the default value. If no
 default value can be inferred, we will set the default value to `20`. Obviously,
-
-
-###
