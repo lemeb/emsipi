@@ -97,7 +97,6 @@ class TestValidationErrors(ConfigTestCase):
             SuiteConfig: Configuration for these tests
         """
         return SuiteConfig(
-            tmp_dir_name="tmp_validation_errors",
             cleanup_on_success=True,
             cleanup_on_failure=False,
             timeout_seconds=10,
