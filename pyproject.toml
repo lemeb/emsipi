@@ -13,17 +13,25 @@ description = "A simple MCP server that can seamlessly run on the cloud."
 license = { text = "MIT License" }
 readme = "README.md"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-    "Typing :: Typed","License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+  "Typing :: Typed",
+  "License :: OSI Approved :: MIT License",
 ]
 authors = [
-    { name = "Leopold Mebazaa", email = "lemeb@users.noreply.github.com" }
+  { name = "Leopold Mebazaa", email = "lemeb@users.noreply.github.com" },
 ]
 dependencies = [
-  # Add your dependencies here
   "fastmcp>=2.10.5",
   "mcp[cli]>=1.11.0",
+  "pyyaml>=6.0",
+  "pydantic>=2.10.6",
+  "rich>=14.0.0",
+  "typer>=0.16.0",
+  "cdktf>=0.21.0",
+  "cdktf-cdktf-provider-google>=16.6.0",
+  "cdktf-cdktf-provider-null>=11.0.0",
+  "constructs>=10.4.2",
 ]
 [dependency-groups]
 dev = [
@@ -44,6 +52,10 @@ dev = [
   "ipykernel",
   # CI/CD
   "pre-commit",
+  "pytest-cov>=6.2.1",
+  # types
+  "types-pyyaml>=6.0.12.20250516",
+  "types-pexpect>=4.9.0.20250516",
 ]
 
 
@@ -51,8 +63,14 @@ dev = [
 "Homepage" = "https://github.com/lemeb/emsipi"
 "Bug Tracker" = "https://github.com/lemeb/emsipi/issues"
 
+[project.scripts]
+emsipi = "emsipi.main:main"
+
 [tool.uv.build-backend]
 module-root = "src"
+
+[tool.uv.workspace]
+members = ["examples/simple-server", "examples/server-with-middleware"]
 
 
 [tool.ruff]
@@ -117,6 +135,8 @@ typeCheckingMode = "all"
 [tool.coverage.run]
 # Measurement of contexts
 dynamic_context = "test_function"
+parallel = true
+branch = true
 
 [tool.coverage.report]
 exclude_also = [
