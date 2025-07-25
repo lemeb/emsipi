@@ -42,7 +42,7 @@ PYTEST_EXCLUDE_PATTERNS := ""
 MDLINT_EXCLUDE_PATTERNS := "\#.venv" "\#scratch"
 
 # Checkable files
-CHECKABLE_FILES := "src/$(SLUG)/ $(shell find tests/ -name '*.py' -not -path 'tests/tmp/*' -not -path 'tests/fixtures/*') docs/"
+CHECKABLE_FILES := src/$(SLUG)/ $(shell find tests/ -name '*.py' -not -path 'tests/tmp/*' -not -path 'tests/fixtures/*') docs/
 
 # Default target
 .DEFAULT_GOAL := help
@@ -161,8 +161,8 @@ check-strict-file: check-strict-file-prep ## Run strict checks on a single file 
 	@rm scratch/pyproject.toml
 
 check-strict-all: ## Run strict checks on all files
-	@$(MAKE) check-strict-file-prep FILE=$(CHECKABLE_FILES)
-	@$(MAKE) -j3 -k check-strict-file-ruff FILE=$(CHECKABLE_FILES) check-strict-file-mypy check-strict-file-pyright FILE=$(CHECKABLE_FILES)
+	@$(MAKE) check-strict-file-prep FILE="$(CHECKABLE_FILES)"
+	@$(MAKE) -j3 -k check-strict-file-ruff FILE="$(CHECKABLE_FILES)" check-strict-file-mypy check-strict-file-pyright FILE="$(CHECKABLE_FILES)"
 	@rm scratch/pyproject.toml
 
 ###############################################################################
