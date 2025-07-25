@@ -23,3 +23,5 @@
 "tests/config/config_tests_scaffolding.py" = ["PLR0917"]
 # Fine to use subprocess in cli_executor.py
 "tests/config/cli_executor.py" = ["S404"]
+# Fine to have a templated string
+"tests/config/virtual_directory.py" = ["RUF027"]
