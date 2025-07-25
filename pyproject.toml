@@ -32,6 +32,7 @@ dependencies = [
   "cdktf-cdktf-provider-google>=16.6.0",
   "cdktf-cdktf-provider-null>=11.0.0",
   "constructs>=10.4.2",
+  "packaging>=25.0",
 ]
 [dependency-groups]
 dev = [
