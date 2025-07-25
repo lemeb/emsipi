@@ -1,0 +1,7 @@
+# NOTE: Copy this file to emsipi.private.yaml and fill in the project ID.
+
+server-name: server-with-middleware
+
+providers:
+  google:
+    project: # Fill this with your GCP project ID
