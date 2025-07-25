@@ -1,0 +1,5 @@
+server-name: {server_name}
+providers:
+  google:
+    project: {project_id}
+    region: {region}

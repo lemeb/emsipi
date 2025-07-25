@@ -1,0 +1,6 @@
+server-name: test-server
+python-version: "3.10"
+providers:
+  google:
+    project: my-gcp-project
+    region: us-central1

@@ -1,0 +1,7 @@
+[project]
+name = "{project_name}"
+version = "{version}"
+requires-python = ">={python_version}"
+dependencies = [
+    "fastmcp>={fastmcp_version}",
+]

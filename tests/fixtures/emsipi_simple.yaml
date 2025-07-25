@@ -1,0 +1,5 @@
+server-name: test-server
+providers:
+  google:
+    project: my-gcp-project
+    region: us-central1
