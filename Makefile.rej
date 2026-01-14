@@ -1,0 +1,18 @@
+diff a/Makefile b/Makefile	(rejected hunks)
+@@ -37,9 +37,13 @@ SPELLCHECK_EXCLUDE_PATTERNS := site/ scratch/
+ PYTEST_EXCLUDE_PATTERNS := ""
+
+ # Markdownlint exclude patterns
+-# Needs to be written in a way that markdownlint understands
+-# (e.g. "\#.venv" "\#scratch" "\#runs")
+-MDLINT_EXCLUDE_PATTERNS := "\#.venv" "\#scratch"
++# These are shell patterns, not markdownlint ones anymore
++MDLINT_EXCLUDE_DIRS := ".venv" "scratch" "runs" "node_modules"
++
++# Build the list of Markdown files, excluding symlinks and excluded dirs
++MD_FILES := $(shell find . \
++	-type d \( $(foreach dir,$(MDLINT_EXCLUDE_DIRS),-name $(dir) -o) -false \) -prune \
++	-o -name '*.md' ! -type l -print)
+
+ # Default target
+ .DEFAULT_GOAL := help

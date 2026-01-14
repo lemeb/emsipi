@@ -220,10 +220,11 @@ spell-check: spell-check-py spell-check-md ## Run all spell checks in parallel
 
 .PHONY: prettier-md markdownlint-md md-check
 prettier-md: check-npx ## Format markdown files
-	@$(NPX) prettier --write --prose-wrap always --print-width 80 docs/**/*.md ./*.md
+	@$(NPX) prettier --write --prose-wrap always --print-width 80 \
+		$(MD_FILES)
 
 markdownlint-md: check-npx ## Lint markdown files
-	@$(NPX) markdownlint-cli2 "**/*.md" $(MDLINT_EXCLUDE_PATTERNS)
+	@$(NPX) markdownlint-cli2 $(MD_FILES)
 
 md-check: prettier-md markdownlint-md ## Check markdown files in parallel
 
