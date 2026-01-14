@@ -34,12 +34,16 @@ SPELLCHECK_EXCLUDE_PATTERNS := site/ scratch/
 # Define patterns to exclude from "fast" testing
 # Needs to be written in a way that pytest understands
 # (e.g. "not test_browser and not test_doc")
-PYTEST_EXCLUDE_PATTERNS := ""
+PYTEST_EXCLUDE_PATTERNS := "not integration"
 
 # Markdownlint exclude patterns
-# Needs to be written in a way that markdownlint understands
-# (e.g. "\#.venv" "\#scratch" "\#runs")
-MDLINT_EXCLUDE_PATTERNS := "\#.venv" "\#scratch"
+# These are shell patterns, not markdownlint ones anymore
+MDLINT_EXCLUDE_DIRS := ".venv" "scratch" "runs" "node_modules"
+
+# Build the list of Markdown files, excluding symlinks and excluded dirs
+MD_FILES := $(shell find . \
+	-type d \( $(foreach dir,$(MDLINT_EXCLUDE_DIRS),-name $(dir) -o) -false \) -prune \
+	-o -name '*.md' ! -type l -print)
 
 # Checkable files
 CHECKABLE_FILES := src/$(SLUG)/ $(shell find tests/ -name '*.py' -not -path 'tests/tmp/*' -not -path 'tests/fixtures/*') docs/

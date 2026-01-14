@@ -2,8 +2,8 @@
 
 ## Overview
 
-This directory contains reusable fixture files for configuration testing.
-These files can be referenced in test cases using the `fixture:filename` syntax.
+This directory contains reusable fixture files for configuration testing. These
+files can be referenced in test cases using the `fixture:filename` syntax.
 
 ### Server Files
 
@@ -14,8 +14,8 @@ These files can be referenced in test cases using the `fixture:filename` syntax.
 ### Configuration Files
 
 - `emsipi_simple.yaml`: Basic emsipi configuration with Google provider
-- `emsipi_simple_version.yaml`: Basic emsipi configuration with Google
-  provider and Python version
+- `emsipi_simple_version.yaml`: Basic emsipi configuration with Google provider
+  and Python version
 - `emsipi_manual.yaml`: Configuration for manual test cases
 - `emsipi_template.yaml`: Template configuration with variables:
   `{server_name}`, `{project_id}`, `{region}`
@@ -41,8 +41,8 @@ These files can be referenced in test cases using the `fixture:filename` syntax.
 
 - `package.0.json`: Empty package.json
 - `package.1.json`: Package.json with a name and a version
-- `package.2.json`: Same as `package.1.json`, but with a `scripts` section and
- a `build` script
+- `package.2.json`: Same as `package.1.json`, but with a `scripts` section and a
+  `build` script
 
 #### `requirements.txt` variants
 
@@ -53,8 +53,8 @@ These files can be referenced in test cases using the `fixture:filename` syntax.
 
 - `pyproject.0.toml`: Empty pyproject.toml
 - `pyproject.1.toml`: Pyproject.toml with a `project.requires-python` key
-- `pyproject.2.toml`: Pyproject.toml with a `project.requires-python` key,
-  but such Python is templated with `{python-version}`
+- `pyproject.2.toml`: Pyproject.toml with a `project.requires-python` key, but
+  such Python is templated with `{python-version}`
 
 ## Template Variables
 

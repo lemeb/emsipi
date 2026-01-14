@@ -1,7 +1,7 @@
 # Testing the configuration
 
-We should use `pytest` to test the configuration.
-We'll use `pytest.mark.parameterize` to run many similar tests
+We should use `pytest` to test the configuration. We'll use
+`pytest.mark.parameterize` to run many similar tests
 
 ## Config generation tests
 
@@ -12,30 +12,29 @@ Each test should have the following parameters:
    two dictionaries (`public_config` and `private_config`). They do not have to
    be present; if so, this means the files are not present.
 
-2. **Files**: This should define, in the working directory, what files should
-   be present and with what content. This should be a dictionary with the
-   key being the file path and the value being the content. To simplify
-   processing of `emsipi.yaml` files, the dictionary should not contain the raw
-   YAML, but a piece of code like `yaml.dumps(public_config)`. Otherwise, the
-   dictionary should contain things like `{"Dockerfile": "..."}`.
-      - It's fine to have a key with a directory `dir/file.txt`. We will create
-        the directories automatically.
-      - All the files will be created in a virtual directory, so every path
-        should be relative.
-      - Re-usable file contents are totally OK, even encouraged. We can find the
-        re-usable files in the `tests/fixtures` directory, and they should be
-        properly documented in `tests/fixtures/README.md`.
-      - These re-usable files can be templates with `{variable}` in them. In
-        this case, they should be formatted with the `format` method of the
-        `str` class.
+2. **Files**: This should define, in the working directory, what files should be
+   present and with what content. This should be a dictionary with the key being
+   the file path and the value being the content. To simplify processing of
+   `emsipi.yaml` files, the dictionary should not contain the raw YAML, but a
+   piece of code like `yaml.dumps(public_config)`. Otherwise, the dictionary
+   should contain things like `{"Dockerfile": "..."}`.
+   - It's fine to have a key with a directory `dir/file.txt`. We will create the
+     directories automatically.
+   - All the files will be created in a virtual directory, so every path should
+     be relative.
+   - Re-usable file contents are totally OK, even encouraged. We can find the
+     re-usable files in the `tests/fixtures` directory, and they should be
+     properly documented in `tests/fixtures/README.md`.
+   - These re-usable files can be templates with `{variable}` in them. In this
+     case, they should be formatted with the `format` method of the `str` class.
 
-3. **CLI arguments**: This should define was is passed to the CLI. It should
-   be the raw text passed to the command line (e.g.
-   `emsipi internal-config google --arg val`). If some operations should be performed
-   before (e.g. `cd`), they should be mentioned in this command.
+3. **CLI arguments**: This should define was is passed to the CLI. It should be
+   the raw text passed to the command line (e.g.
+   `emsipi internal-config google --arg val`). If some operations should be
+   performed before (e.g. `cd`), they should be mentioned in this command.
 
-4. **Environment variables**: This should be the environment variables passed
-   to the CLI.
+4. **Environment variables**: This should be the environment variables passed to
+   the CLI.
 
 5. **Wizard behavior**: This should define the expected flow of the wizard. It
    should be a list of tuples of two. Each tuple represents a step: the first
@@ -75,11 +74,11 @@ After this, we should do the following operations to execute each test:
 
 5. We surveil the output of the CLI so that, if it asks for input, we check
    what's been displayed to stdout and compare it to the strings present in the
-   wizard behavior parameters. If the check passes, we fill the input defined
-   in these parameters, and move on.
+   wizard behavior parameters. If the check passes, we fill the input defined in
+   these parameters, and move on.
 
-6. At the end of the process, we should get a JSON in the stdout. This should
-   be parsed and compared to the expected configuration parameter.
+6. At the end of the process, we should get a JSON in the stdout. This should be
+   parsed and compared to the expected configuration parameter.
 
 7. Then we check the files that were created during the execution of the CLI.
 

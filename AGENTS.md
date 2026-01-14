@@ -7,15 +7,15 @@
     help you focus on one thing at a time, and will make it easier to debug
     issues.
   - In practice, it means that you should operate roughly thusly:
-    1. Create the directory and files needed for the feature (and ONLY
-       those files.) Maybe update `.gitignore` if needed.
+    1. Create the directory and files needed for the feature (and ONLY those
+       files.) Maybe update `.gitignore` if needed.
     2. Add the dependencies needed for the feature (and ONLY those
        dependencies.)
     3. Write the code for the feature (and ONLY that code.)
     4. Write the tests for the feature (and ONLY those tests.)
     5. Run the tests and make sure they pass.
-    6. Document the feature (and ONLY that documentation, although you might
-       to update / refactor other documentation as needed.)
+    6. Document the feature (and ONLY that documentation, although you might to
+       update / refactor other documentation as needed.)
     7. Propose a git commit with a clear message explaining what you did.
   - This is only a guideline, not a strict rule. Use your best judgment. But in
     general, we want git commits to be clean and self-contained.
@@ -28,8 +28,8 @@
   - If you need to add a dev dependency, use `uv add --dev <package>`.
   - Corollary: never modify `pyproject.toml` or `uv.lock` directly. Always use
     `uv` commands.
-  - Only add dependencies that are strictly necessary. Yes, you might think
-    that some packages will need to be added later. Well, wait until later then.
+  - Only add dependencies that are strictly necessary. Yes, you might think that
+    some packages will need to be added later. Well, wait until later then.
 
 - **Checking code**:
   - Use `uv run ruff format . && uv run ruff check . --fix`, then
