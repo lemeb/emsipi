@@ -25,15 +25,15 @@ jobs:
           # will need to specify a personal access token (PAT) in the
           # secrets of this repository. You can find reference code that
           # alludes to this possibility later in the file.
-          # To include workflow files, delete the "!.github/workflows/" line and use a PAT
+          # To include workflow files, delete the ":!.github/workflows/" line and use a PAT
           - add-paths: |
               .
-              !.github/workflows/
+              :!.github/workflows/
             body: Use this to merge the changes to this repository.
             branch: cruft/update
             commit-message: "chore: accept new Cruft update"
             title: New updates detected with Cruft
-          - add-paths: .cruft.json
+          - add-paths: ./.cruft.json
             body: Use this to reject the changes in this repository.
             branch: cruft/reject
             commit-message: "chore: reject new Cruft update"

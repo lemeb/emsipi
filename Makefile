@@ -173,13 +173,18 @@ check-strict-all: ## Run strict checks on all files
 # TESTING
 ###############################################################################
 
-.PHONY: check-dotenv test test-all test-verbose test-all-versions
+.PHONY: check-dotenv test test-with-coverage test-all test-verbose test-all-versions
 check-dotenv: ## Check that the .env file exists
 	@if [ ! -f ".env" ]; then \
 		echo "Please create a .env file with the necessary environment variables."; exit 1; fi
 
 test: ## Run basic tests
 	@$(UV) run pytest -k $(PYTEST_EXCLUDE_PATTERNS)
+
+test-with-coverage: ## Run basic tests with coverage report (no overwrite of test-all)
+	@$(UV) run coverage run --data-file .coverage.unit -m pytest -k $(PYTEST_EXCLUDE_PATTERNS)
+	@$(UV) run coverage report -m --data-file .coverage.unit
+	@rm -f .coverage.unit
 
 test-verbose: ## Run verbose tests
 	@$(UV) run pytest --log-cli-level=2 -k $(PYTEST_EXCLUDE_PATTERNS) -s -vv
