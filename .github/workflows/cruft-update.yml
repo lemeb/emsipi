@@ -63,6 +63,14 @@ jobs:
 
           echo "has_changes=$CHANGES" >> "$GITHUB_OUTPUT"
 
+      - name: Close old cruft PRs
+        if: steps.check.outputs.has_changes == '1'
+        run: |
+          gh pr list --state open --head "cruft/${{ matrix.branch }}" --json number -q '.[].number' | \
+            xargs -I {} gh pr close {} --comment "Superseded by newer cruft update"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Run update if available
         if: steps.check.outputs.has_changes == '1'
         run: |
