@@ -47,14 +47,15 @@
   - Always add new dependencies using `uv add <package>`. This will ensure
     proper locking of the dependencies.
   - If you need to add a dev dependency, use `uv add --dev <package>`.
-  - Corollary: never modify `pyproject.toml` or `uv.lock` directly. Always use
-    `uv` commands.
+  - Corollary: never modify `pyproject.toml` or `uv.lock` directly as far as
+    dependencies are concerned. Always use `uv` commands.
   - Only add dependencies that are strictly necessary. Yes, you might think
     that some packages will need to be added later. Well, wait until later then.
 
 - **Checking code**:
   - Use `uv run ruff format . && uv run ruff check . --fix`, then
-    `make check-strict-all` to check your code.
+    `make check-strict-all` to check your code. Please refer to the earlier
+    instructions on what is appropriate when.
   - One quirk of `make check-strict-all` is that it will run `ruff`'s preview
     rules. If you want to comment such rule out, you cannot do it in the file;
     it will be removed by `ruff format`. Instead, you should update the
@@ -64,7 +65,8 @@
     in that file.
   - If you're wondering if a rule is in preview: if it appears during
     `make check-strict-all`, but not during `make check`, then it is a preview
-    rule.
+    rule. This means that you need to comment it out in `ruff-strict.toml` if
+    you want to ignore it.
   - Be **really** weary before adding any `# type: ignore`, `# pyright: ignore`,
     or `# noqa` comments. These should be used only as last resort, when no
     better solution is available. Don't hesitate to ask questions to the user on
