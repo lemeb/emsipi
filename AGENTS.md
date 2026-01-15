@@ -54,7 +54,8 @@
 
 - **Checking code**:
   - Use `uv run ruff format . && uv run ruff check . --fix`, then
-    `make check-strict-all` to check your code.
+    `make check-strict-all` to check your code. Please refer to the earlier
+    instructions on what is appropriate when.
   - One quirk of `make check-strict-all` is that it will run `ruff`'s preview
     rules. If you want to comment such rule out, you cannot do it in the file;
     it will be removed by `ruff format`. Instead, you should update the
