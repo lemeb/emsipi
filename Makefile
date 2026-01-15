@@ -37,9 +37,13 @@ SPELLCHECK_EXCLUDE_PATTERNS := site/ scratch/
 PYTEST_EXCLUDE_PATTERNS := ""
 
 # Markdownlint exclude patterns
-# Needs to be written in a way that markdownlint understands
-# (e.g. "\#.venv" "\#scratch" "\#runs")
-MDLINT_EXCLUDE_PATTERNS := "\#.venv" "\#scratch"
+# These are shell patterns, not markdownlint ones anymore
+MDLINT_EXCLUDE_DIRS := ".venv" "scratch" "runs" "node_modules"
+
+# Build the list of Markdown files, excluding symlinks and excluded dirs
+MD_FILES := $(shell find . \
+	-type d \( $(foreach dir,$(MDLINT_EXCLUDE_DIRS),-name $(dir) -o) -false \) -prune \
+	-o -name '*.md' ! -type l -print)
 
 # Default target
 .DEFAULT_GOAL := help
@@ -167,13 +171,18 @@ check-strict-all: ## Run strict checks on all files
 # TESTING
 ###############################################################################
 
-.PHONY: check-dotenv test test-all test-verbose test-all-versions
+.PHONY: check-dotenv test test-with-coverage test-all test-verbose test-all-versions
 check-dotenv: ## Check that the .env file exists
 	@if [ ! -f ".env" ]; then \
 		echo "Please create a .env file with the necessary environment variables."; exit 1; fi
 
 test: ## Run basic tests
 	@$(UV) run pytest -k $(PYTEST_EXCLUDE_PATTERNS)
+
+test-with-coverage: ## Run basic tests with coverage report (no overwrite of test-all)
+	@$(UV) run coverage run --data-file .coverage.unit -m pytest -k $(PYTEST_EXCLUDE_PATTERNS)
+	@$(UV) run coverage report -m --data-file .coverage.unit
+	@rm -f .coverage.unit
 
 test-verbose: ## Run verbose tests
 	@$(UV) run pytest --log-cli-level=2 -k $(PYTEST_EXCLUDE_PATTERNS) -s -vv
@@ -217,10 +226,11 @@ spell-check: spell-check-py spell-check-md ## Run all spell checks in parallel
 
 .PHONY: prettier-md markdownlint-md md-check
 prettier-md: check-npx ## Format markdown files
-	@$(NPX) prettier --write --prose-wrap always --print-width 80 docs/**/*.md ./*.md
+	@$(NPX) prettier --write --prose-wrap always --print-width 80 \
+		$(MD_FILES)
 
 markdownlint-md: check-npx ## Lint markdown files
-	@$(NPX) markdownlint-cli2 "**/*.md" $(MDLINT_EXCLUDE_PATTERNS)
+	@$(NPX) markdownlint-cli2 $(MD_FILES)
 
 md-check: prettier-md markdownlint-md ## Check markdown files in parallel
 
