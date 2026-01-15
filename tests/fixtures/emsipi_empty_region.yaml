@@ -1,0 +1,4 @@
+providers:
+  google:
+    project: "test-project"
+    region: ""

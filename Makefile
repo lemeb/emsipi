@@ -34,12 +34,19 @@ SPELLCHECK_EXCLUDE_PATTERNS := site/ scratch/
 # Define patterns to exclude from "fast" testing
 # Needs to be written in a way that pytest understands
 # (e.g. "not test_browser and not test_doc")
-PYTEST_EXCLUDE_PATTERNS := ""
+PYTEST_EXCLUDE_PATTERNS := "not integration"
 
 # Markdownlint exclude patterns
-# Needs to be written in a way that markdownlint understands
-# (e.g. "\#.venv" "\#scratch" "\#runs")
-MDLINT_EXCLUDE_PATTERNS := "\#.venv" "\#scratch"
+# These are shell patterns, not markdownlint ones anymore
+MDLINT_EXCLUDE_DIRS := ".venv" "scratch" "runs" "node_modules"
+
+# Build the list of Markdown files, excluding symlinks and excluded dirs
+MD_FILES := $(shell find . \
+	-type d \( $(foreach dir,$(MDLINT_EXCLUDE_DIRS),-name $(dir) -o) -false \) -prune \
+	-o -name '*.md' ! -type l -print)
+
+# Checkable files
+CHECKABLE_FILES := src/$(SLUG)/ $(shell find tests/ -name '*.py' -not -path 'tests/tmp/*' -not -path 'tests/fixtures/*') docs/
 
 # Default target
 .DEFAULT_GOAL := help
@@ -118,13 +125,13 @@ clean: ## Remove generated files
 
 .PHONY: ruff-check ruff-format mypy-check check
 ruff-check: ## Run ruff checks
-	@$(UV) run ruff check .
+	@$(UV) run ruff check $(CHECKABLE_FILES)
 
 ruff-format: ## Run ruff formatter
-	@$(UV) run ruff format .
+	@$(UV) run ruff format $(CHECKABLE_FILES)
 
 mypy-check: ## Run mypy checks
-	@$(UV) run mypy --check-untyped-defs --strict src/$(SLUG) tests/ --ignore-missing-imports
+	@$(UV) run mypy --check-untyped-defs --strict $(CHECKABLE_FILES) --ignore-missing-imports
 
 check: ruff-check ruff-format mypy-check ## Run basic code quality checks in parallel
 
@@ -145,7 +152,7 @@ check-strict-file-prep: ## Prepare config for strict file check
 	@cat ruff-strict.toml >> scratch/pyproject.toml
 
 check-strict-file-ruff: check-strict-file-prep ## Run ruff on single file
-	$(UV) run ruff check --preview $(FILE) --config scratch/pyproject.toml
+	@$(UV) run ruff check --preview $(FILE) --config scratch/pyproject.toml
 
 check-strict-file-pyright: check-strict-file-prep ## Run pyright on single file
 	@$(UV) tool run basedpyright $(FILE)
@@ -158,16 +165,15 @@ check-strict-file: check-strict-file-prep ## Run strict checks on a single file 
 	@rm scratch/pyproject.toml
 
 check-strict-all: ## Run strict checks on all files
-	$(eval FILE := "src/$(SLUG)/ tests/ docs/")
-	@$(MAKE) check-strict-file-prep FILE=$(FILE)
-	@$(MAKE) -j3 -k check-strict-file-ruff FILE=$(FILE) check-strict-file-mypy check-strict-file-pyright FILE=$(FILE)
+	@$(MAKE) check-strict-file-prep FILE="$(CHECKABLE_FILES)"
+	@$(MAKE) -j3 -k check-strict-file-ruff FILE="$(CHECKABLE_FILES)" check-strict-file-mypy check-strict-file-pyright FILE="$(CHECKABLE_FILES)"
 	@rm scratch/pyproject.toml
 
 ###############################################################################
 # TESTING
 ###############################################################################
 
-.PHONY: check-dotenv test test-all test-verbose test-all-versions
+.PHONY: check-dotenv test test-with-coverage test-all test-verbose test-all-versions
 check-dotenv: ## Check that the .env file exists
 	@if [ ! -f ".env" ]; then \
 		echo "Please create a .env file with the necessary environment variables."; exit 1; fi
@@ -175,11 +181,17 @@ check-dotenv: ## Check that the .env file exists
 test: ## Run basic tests
 	@$(UV) run pytest -k $(PYTEST_EXCLUDE_PATTERNS)
 
+test-with-coverage: ## Run basic tests with coverage report (no overwrite of test-all)
+	@$(UV) run coverage run --data-file .coverage.unit -m pytest -k $(PYTEST_EXCLUDE_PATTERNS)
+	@$(UV) run coverage report -m --data-file .coverage.unit
+	@rm -f .coverage.unit
+
 test-verbose: ## Run verbose tests
 	@$(UV) run pytest --log-cli-level=2 -k $(PYTEST_EXCLUDE_PATTERNS) -s -vv
 
 test-all: check-dotenv ## Run all tests with coverage
 	@$(UV) run --all-groups coverage run -m pytest --log-cli-level=2
+	@$(UV) run --all-groups coverage combine
 	@$(UV) run --all-groups coverage html --show-contexts
 
 test-all-versions: check-venv ## Run tests with coverage for all supported Python versions
@@ -217,10 +229,11 @@ spell-check: spell-check-py spell-check-md ## Run all spell checks in parallel
 
 .PHONY: prettier-md markdownlint-md md-check
 prettier-md: check-npx ## Format markdown files
-	@$(NPX) prettier --write --prose-wrap always --print-width 80 docs/**/*.md ./*.md
+	@$(NPX) prettier --write --prose-wrap always --print-width 80 \
+		$(MD_FILES)
 
 markdownlint-md: check-npx ## Lint markdown files
-	@$(NPX) markdownlint-cli2 "**/*.md" $(MDLINT_EXCLUDE_PATTERNS)
+	@$(NPX) markdownlint-cli2 $(MD_FILES)
 
 md-check: prettier-md markdownlint-md ## Check markdown files in parallel
 

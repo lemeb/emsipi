@@ -1,0 +1,7 @@
+server-name: test-server
+runtime: node
+node-version: 20
+providers:
+  google:
+    project: my-gcp-project
+    region: us-central1

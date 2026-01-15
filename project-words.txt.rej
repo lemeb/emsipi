@@ -1,0 +1,6 @@
+diff a/project-words.txt b/project-words.txt	(rejected hunks)
+@@ -7,3 +7,4 @@ mkdocs
+ mkdocstrings
+ mypy
+ docstrings
++noqa

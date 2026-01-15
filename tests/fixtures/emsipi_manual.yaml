@@ -1,0 +1,5 @@
+server-name: manual-test-server
+providers:
+  google:
+    project: manual-project
+    region: us-west2

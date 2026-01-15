@@ -1,0 +1,16 @@
+{
+  "name": "test-server",
+  "version": "1.0.0",
+  "description": "Test MCP server",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/server": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
