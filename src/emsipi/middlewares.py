@@ -54,7 +54,7 @@ class ASGIMiddleware:
             send: The ASGI send function to send messages.
         """
 
-        def clean_starlette_dict(d: Mapping) -> dict:
+        def clean_starlette_dict(d: Mapping) -> dict:  # type: ignore[type-arg]
             """Clean the Starlette dictionary by removing empty values."""
             return {k: v for k, v in d.items() if k not in {"app"}}
 
@@ -91,7 +91,9 @@ class SimpleLoggingMiddleware(Middleware):
     """Simple logging middleware for MCP server."""
 
     async def __call__(
-        self, context: MiddlewareContext, call_next: CallNext
+        self,
+        context: MiddlewareContext,  # type: ignore[type-arg]
+        call_next: CallNext,  # type: ignore[type-arg]
     ) -> Any:  # noqa: ANN401
         """Log the incoming message and call the next middleware or handler.
 
