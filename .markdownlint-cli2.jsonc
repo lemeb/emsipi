@@ -3,6 +3,11 @@
       // Necessary to avoid errors for admonitions
       "code-block-style": false,
       "reference-links-images": false,
+      // Line length: ignore tables and code blocks
+      "MD013": {
+        "tables": false,
+        "code_blocks": false
+      },
       // We allow to put <br> for things like footnotes where Mkdocs
       // require only one line
       "MD033": {
