@@ -5,8 +5,10 @@
 # Consistent shell behavior
 SHELL := $(shell which bash)
 
-# Enable parallel execution
-MAKEFLAGS += --jobs
+# Enable parallel execution and keep going on errors to show all failures
+# Use a portable -j value since BSD make doesn't support --jobs without a count.
+JOBS ?= $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || nproc 2>/dev/null || echo 4)
+MAKEFLAGS += -j$(JOBS) -k
 .NOTPARALLEL: install install-all update update-all  # These targets shouldn't run in parallel
 
 # Variables
@@ -120,52 +122,61 @@ clean: ## Remove generated files
 # BASIC CODE QUALITY CHECKS
 #########################################################################
 
-.PHONY: ruff-check ruff-format mypy-check check
+.PHONY: ruff-check ruff-format ruff-format-check mypy-check check check-fix
 ruff-check: ## Run ruff checks
 	@$(UV) run ruff check .
 
-ruff-format: ## Run ruff formatter
+ruff-format: ## Run ruff formatter (modifies files)
 	@$(UV) run ruff format .
+
+ruff-format-check: ## Verify ruff formatting without modifying files
+	@$(UV) run ruff format --check .
 
 mypy-check: ## Run mypy checks
 	@$(UV) run mypy --check-untyped-defs --strict src/$(SLUG) tests/ --ignore-missing-imports
 
-check: ruff-check ruff-format mypy-check ## Run basic code quality checks in parallel
+check-fix: ## Format code and auto-fix lint errors
+	@$(UV) run ruff format .
+	@$(UV) run ruff check . --fix
+
+check: ruff-check ruff-format-check mypy-check ## Run code quality checks in parallel (read-only)
 
 #########################################################################
 # STRICT CHECKS
 #########################################################################
 
-.PHONY: check-strict-file-prep
+.PHONY: check-strict-file-guard
 .PHONY: check-strict-file-ruff check-strict-file-pyright check-strict-file-mypy
 .PHONY: check-strict-file check-strict-all
-check-strict-file-prep: ## Prepare config for strict file check
-	@if [ -z "$(FILE)" ]; then \
-		echo "Error: FILE parameter is required (e.g., make check-strict-file FILE=path/to/file)"; \
+STRICT_CONFIG := scratch/pyproject.toml
+FILES ?= $(FILE)
+
+check-strict-file-guard: ## Ensure FILE is provided for strict checks
+	@if [ -z "$(strip $(FILES))" ]; then \
+		echo "Error: FILES parameter is required (e.g., make check-strict-file FILES=path/to/file)"; \
 		exit 1; \
 	fi
+
+$(STRICT_CONFIG): pyproject.toml ruff-strict.toml
 	@mkdir -p scratch
-	@cp pyproject.toml scratch/pyproject.toml
-	@cat ruff-strict.toml >> scratch/pyproject.toml
+	@cp pyproject.toml $(STRICT_CONFIG)
+	@cat ruff-strict.toml >> $(STRICT_CONFIG)
 
-check-strict-file-ruff: check-strict-file-prep ## Run ruff on single file
-	$(UV) run ruff check --preview $(FILE) --config scratch/pyproject.toml
+check-strict-file-ruff: check-strict-file-guard $(STRICT_CONFIG) ## Run ruff on single file
+	$(UV) run ruff check --preview $(FILES) --config $(STRICT_CONFIG)
 
-check-strict-file-pyright: check-strict-file-prep ## Run pyright on single file
-	@$(UV) tool run basedpyright $(FILE)
+check-strict-file-pyright: check-strict-file-guard $(STRICT_CONFIG) ## Run pyright on single file
+	@$(UV) tool run basedpyright $(FILES)
 
-check-strict-file-mypy: check-strict-file-prep ## Run mypy on single file
-	@$(UV) run mypy --strict $(FILE)
+check-strict-file-mypy: check-strict-file-guard $(STRICT_CONFIG) ## Run mypy on single file
+	@$(UV) run mypy --strict $(FILES)
 
-check-strict-file: check-strict-file-prep ## Run strict checks on a single file in parallel
-	@$(MAKE) -k -j3 check-strict-file-ruff check-strict-file-pyright check-strict-file-mypy
-	@rm scratch/pyproject.toml
+check-strict-file: check-strict-file-guard $(STRICT_CONFIG) check-strict-file-ruff check-strict-file-pyright check-strict-file-mypy ## Run strict checks on a single file in parallel
+	@rm -f $(STRICT_CONFIG)
 
-check-strict-all: ## Run strict checks on all files
-	$(eval FILE := "src/$(SLUG)/ tests/ docs/")
-	@$(MAKE) check-strict-file-prep FILE=$(FILE)
-	@$(MAKE) -j3 -k check-strict-file-ruff FILE=$(FILE) check-strict-file-mypy check-strict-file-pyright FILE=$(FILE)
-	@rm scratch/pyproject.toml
+check-strict-all: FILES := src/$(SLUG)/ tests/ docs/
+check-strict-all: check-strict-file-ruff check-strict-file-mypy check-strict-file-pyright ## Run strict checks on all files
+	@rm -f $(STRICT_CONFIG)
 
 ###############################################################################
 # TESTING
@@ -224,26 +235,29 @@ spell-check: spell-check-py spell-check-md ## Run all spell checks in parallel
 # MARKDOWN CHECKS
 #########################################################################
 
-.PHONY: prettier-md markdownlint-md md-check
+.PHONY: prettier-md prettier-md-check markdownlint-md md-check
 prettier-md: check-npx ## Format markdown files
 	@$(NPX) prettier --write --prose-wrap always --print-width 80 \
 		$(MD_FILES)
 
-markdownlint-md: check-npx ## Lint markdown files
+prettier-md-check: check-npx ## Check markdown formatting without modifying files
+	@$(NPX) prettier --check --prose-wrap always --print-width 80 \
+		$(MD_FILES)
+
+markdownlint-md: ## Lint markdown files
 	@$(NPX) markdownlint-cli2 $(MD_FILES)
 
-md-check: prettier-md markdownlint-md ## Check markdown files in parallel
+md-check: prettier-md-check markdownlint-md ## Check markdown formatting and lint in parallel
 
 #########################################################################
 # DOCUMENTATION
 #########################################################################
 
-.PHONY: doc doc-serve
-doc: check-npx ## Build documentation
-	make md-check & \
-	make spell-check & \
-	wait && \
+.PHONY: doc doc-serve doc-build
+doc-build: md-check spell-check ## Run all doc checks then build
 	$(UV) run mkdocs build
+
+doc: doc-build ## Build documentation (md-check and spell-check run in parallel first)
 
 doc-serve: ## Serve documentation locally
 	@$(UV) run mkdocs serve

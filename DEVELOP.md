@@ -141,3 +141,42 @@ There are two Github Actions workflows:
 > will need to use a Personal Access Token in the configuration of the workflow.
 > See the [`cruft-update.yml`](.github/workflows/cruft-update.yml) file for more
 > details.
+
+### Commit message format
+
+We use [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+for commit messages.
+
+Allowed prefixes are:
+
+- `feat`: A new feature
+- `fix`: A bug fix
+- `docs`: Documentation only changes
+- `style`: Changes that do not affect the meaning of the code (white-space,
+  formatting, missing semi-colons, etc)
+- `refactor`: A code change that neither fixes a bug nor adds a feature
+- `perf`: A code change that improves performance
+- `test`: Adding missing tests or correcting existing tests
+- `chore`: Changes to the build process or auxiliary tools and libraries such as
+  documentation generation
+- `ci`: Changes to our CI configuration files and scripts
+- `build`: Changes that affect the build system or external dependencies
+- `revert`: Reverts a previous commit
+- `wip`: Work in progress (should not be used in final commit messages)
+- `release`: A release commit
+- `hotfix`: A critical fix that needs to be applied immediately
+- `deps`: A dependency update
+- `merge`: A merge commit
+
+We also use suffixes for breaking changes (`!`) and for scope (`(scope)`).
+Scopes include:
+
+- `*`: No specific scope
+
+<!-- Please add repository-specific scopes here -->
+
+In general, it is frowned upon for the body of the commit to be empty,
+especially for big commits, but you can use your judgment on this.
+
+AI tools are allowed to be co-authors on commits, but they should represent
+themselves accurately.
