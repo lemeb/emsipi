@@ -1,6 +1,6 @@
 {
   "template": "https://github.com/lemeb/python-library-cookiecutter",
-  "commit": "080f04ea185bdbf2a59eb7a5a3ce00ac460cc440",
+  "commit": "74236a34d79ce354e56d0687086b75686316a209",
   "checkout": null,
   "context": {
     "cookiecutter": {
@@ -16,7 +16,7 @@
       "includes_playwright": "no",
       "github_repo": "lemeb/emsipi",
       "_template": "https://github.com/lemeb/python-library-cookiecutter",
-      "_commit": "080f04ea185bdbf2a59eb7a5a3ce00ac460cc440"
+      "_commit": "74236a34d79ce354e56d0687086b75686316a209"
     }
   },
   "directory": null
