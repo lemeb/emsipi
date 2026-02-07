@@ -1,0 +1,26 @@
+diff a/project-words.txt b/project-words.txt	(rejected hunks)
+@@ -1,10 +1,19 @@
+-venv
+-pyproject
++# Common words for emsipi project
++# IMPORTANT: NEVER RUN `sort` ON THIS FILE
++# The following words are from the template
+ basedpyright
+-pytest
+-pyright
++dataclass
++docstrings
++kwargs
+ mkdocs
+ mkdocstrings
+ mypy
+-docstrings
+ noqa
++paramname
++pydantic
++pyproject
++pyright
++pytest
++venv
++
++# Insert yours underneath
