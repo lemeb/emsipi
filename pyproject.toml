@@ -28,6 +28,8 @@ dependencies = [
 [dependency-groups]
 dev = [
   "python-dotenv",
+  # workflow automation
+  "typer",
   # testing
   "coverage",
   "pytest",
